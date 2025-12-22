@@ -1,0 +1,163 @@
+/* src/components/metaballs.css */
+/* Fonts (keep as in original or replace with your fonts) */
+@import url("https://fonts.cdnfonts.com/css/pp-neue-montreal");
+@font-face {
+  font-family: "PPSupplyMono";
+  src: url("https://assets.codepen.io/7558/PPSupplyMono-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* variables */
+:root {
+  --warm-off-white: #ffffff;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --background-dark: #1a1a1a;
+  --font-primary: "PP Neue Montreal", sans-serif;
+  --font-secondary: "PPSupplyMono", monospace;
+  --font-size-small: 10px;
+  --font-size-regular: 1rem;
+  --font-size-medium: 1.5rem;
+  --font-size-large: 4rem;
+  --spacing-small: 0.5rem;
+  --spacing-medium: 1rem;
+  --spacing-large: 2rem;
+  --transition-fast: 0.3s ease;
+  --transition-medium: 0.5s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+/* component-level base - replaces global body rules */
+.metaballs-section {
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--text-primary);
+  background-color: var(--background-dark);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-small);
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+.metaballs-section canvas {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: auto;
+}
+
+/* keep the overlay texture from original */
+.metaballs-section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://img.freepik.com/premium-photo/white-dust-scratches-black-background_279525-2.jpg?w=640");
+  background-repeat: repeat;
+  opacity: 0.2;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 1;
+  filter: invert(0);
+}
+
+/* container where canvas will be appended */
+#container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0f0f0f;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* UI container (we removed tweakpane but keep location) */
+#ui-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 100;
+  opacity: 0.8;
+  transition: opacity var(--transition-fast);
+}
+
+/* header/logo/title/hero - these sit above the canvas (z-index > 0) */
+/* All text elements removed - keeping only the canvas container */
+
+/* Hero Content Overlay */
+.hero-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+  color: var(--text-primary);
+  width: 90%;
+  max-width: 900px;
+  pointer-events: none;
+}
+
+.hero-title {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.hero-subtitle-text {
+  background: linear-gradient(135deg, #9147ff 0%, #bf94ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+  font-weight: 600;
+}
+
+.hero-description {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  line-height: 1.6;
+  color: #adadb8;
+  margin: 0;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero-content {
+    width: 95%;
+    padding: 0 1rem;
+  }
+  
+  .hero-title {
+    margin-bottom: 1rem;
+  }
+  
+  .hero-description {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2.2rem;
+  }
+  
+  .hero-description {
+    font-size: 1rem;
+  }
+}
+
+/* Responsive styles removed as text elements are gone */
