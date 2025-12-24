@@ -43,13 +43,29 @@ function ParticleCanvas() {
 
     const init = () => {
       particles = []
-      const particleCount = Math.floor((canvas.width * canvas.height) / 20000)
+      // Reduce particle count for better performance
+      const particleCount = Math.min(
+        Math.floor((canvas.width * canvas.height) / 25000), // Increased divisor
+        50 // Maximum particle limit
+      )
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle())
       }
     }
 
-    const animate = () => {
+    let lastFrameTime = 0
+    const targetFPS = 30 // Reduced from 60fps for better performance
+    const frameInterval = 1000 / targetFPS
+
+    const animate = (currentTime) => {
+      animationFrameId = requestAnimationFrame(animate)
+      
+      // Throttle animation to target FPS
+      if (currentTime - lastFrameTime < frameInterval) {
+        return
+      }
+      lastFrameTime = currentTime
+
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       
       particles.forEach(particle => {
@@ -57,7 +73,7 @@ function ParticleCanvas() {
         particle.draw()
       })
 
-      // Draw connections
+      // Draw connections with reduced complexity
       particles.forEach((p1, i) => {
         particles.slice(i + 1).forEach(p2 => {
           const dx = p1.x - p2.x
@@ -74,22 +90,26 @@ function ParticleCanvas() {
           }
         })
       })
-
-      animationFrameId = requestAnimationFrame(animate)
     }
 
     resizeCanvas()
     init()
-    animate()
+    animate(0) // Start with timestamp 0
 
-    window.addEventListener('resize', () => {
-      resizeCanvas()
-      init()
-    })
+    const handleResize = () => {
+      clearTimeout(window.resizeTimeout)
+      window.resizeTimeout = setTimeout(() => {
+        resizeCanvas()
+        init()
+      }, 150) // Debounce resize
+    }
+
+    window.addEventListener('resize', handleResize)
 
     return () => {
       cancelAnimationFrame(animationFrameId)
-      window.removeEventListener('resize', resizeCanvas)
+      window.removeEventListener('resize', handleResize)
+      clearTimeout(window.resizeTimeout)
     }
   }, [])
 

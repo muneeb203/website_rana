@@ -1,22 +1,15 @@
-import Navbar from './components/Navbar'
-import Services from './components/Services'
-import Process from './components/Process'
-import About from './components/About'
-import Contact from './components/Contact'
-import Footer from './components/Footer'
-import MetaBalls from "./components/MetaBalls";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import HomePage from './pages/HomePage'
+import AboutPage from './pages/AboutPage'
 
 function App() {
   return (
-    <>
-      <Navbar />
-      <MetaBalls />
-      <Services />
-      <Process />
-      <About />
-      <Contact />
-      <Footer />
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
+      </Routes>
+    </Router>
   )
 }
 

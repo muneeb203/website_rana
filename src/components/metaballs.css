@@ -40,6 +40,9 @@
   width: 100%;
   min-height: 100vh;
   position: relative;
+  /* Performance optimizations */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .metaballs-section canvas {
@@ -47,6 +50,9 @@
   image-rendering: crisp-edges;
   image-rendering: pixelated;
   image-rendering: auto;
+  /* GPU acceleration */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /* keep the overlay texture from original */

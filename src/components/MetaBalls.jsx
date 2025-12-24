@@ -432,9 +432,16 @@ export default function MetaBalls() {
       storyText.innerHTML = text;
     }
 
-    // pointer handlers
+    // pointer handlers with throttling
     let activeMerges = 0;
+    let lastMoveTime = 0;
+    const moveThrottle = isMobile ? 32 : 16; // Throttle mouse events
+    
     function onPointerMove(event) {
+      const now = Date.now();
+      if (now - lastMoveTime < moveThrottle) return;
+      lastMoveTime = now;
+      
       const clientX = event.clientX !== undefined ? event.clientX : (event.touches && event.touches[0].clientX);
       const clientY = event.clientY !== undefined ? event.clientY : (event.touches && event.touches[0].clientY);
       if (clientX == null || clientY == null) return;
@@ -479,17 +486,21 @@ export default function MetaBalls() {
     }
 
     function onWindowResize() {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const currentPixelRatio = Math.min(devicePixelRatio, isMobile ? 2 : 2.5);
-      renderer.setSize(w, h);
-      renderer.setPixelRatio(currentPixelRatio);
-      material.uniforms.uResolution.value.set(w, h);
-      material.uniforms.uActualResolution.value.set(w * currentPixelRatio, h * currentPixelRatio);
-      material.uniforms.uPixelRatio.value = currentPixelRatio;
-      // reapply canvas css
-      canvas.style.width = "100%";
-      canvas.style.height = "100%";
+      // Debounce resize events
+      clearTimeout(window.resizeTimeout);
+      window.resizeTimeout = setTimeout(() => {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const currentPixelRatio = Math.min(devicePixelRatio, isMobile ? 2 : 2.5);
+        renderer.setSize(w, h);
+        renderer.setPixelRatio(currentPixelRatio);
+        material.uniforms.uResolution.value.set(w, h);
+        material.uniforms.uActualResolution.value.set(w * currentPixelRatio, h * currentPixelRatio);
+        material.uniforms.uPixelRatio.value = currentPixelRatio;
+        // reapply canvas css
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+      }, 100);
     }
 
     // attach listeners
@@ -502,9 +513,19 @@ export default function MetaBalls() {
     // prime cursor at center
     onPointerMove({ clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 });
 
-    // animation loop
-    function render() {
+    // animation loop with performance throttling
+    let lastFrameTime = 0;
+    const targetFPS = isMobile ? 30 : (isLowPowerDevice ? 45 : 60);
+    const frameInterval = 1000 / targetFPS;
+    
+    function render(currentTime) {
       rafRef.current = requestAnimationFrame(render);
+
+      // Throttle rendering based on device capabilities
+      if (currentTime - lastFrameTime < frameInterval) {
+        return;
+      }
+      lastFrameTime = currentTime;
 
       // smooth mouse
       mousePos.current.x += (mouseTarget.current.x - mousePos.current.x) * settings.mouseSmoothness;
