@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -9,6 +9,11 @@ function Contact() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState('')
+
+  // Memoize form validation to prevent unnecessary re-renders
+  const isFormValid = useMemo(() => {
+    return formData.name.trim() && formData.email.trim() && formData.message.trim()
+  }, [formData.name, formData.email, formData.message])
 
   const handleSubmit = async (e) => {
     e.preventDefault()

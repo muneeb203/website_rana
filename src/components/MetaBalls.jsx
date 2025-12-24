@@ -603,8 +603,8 @@ export default function MetaBalls() {
           We build AI solutions that understand your business, not just your data.
         </p>
         <div className="hero-cta">
-          <a href="#contact" className="btn-primary btn-large">Start with a conversation</a>
-          <a href="#services" className="btn-secondary btn-large">Explore solutions</a>
+          <a href="/about" className="btn-primary btn-large">About Us</a>
+          <a href="https://voas-ai.convosol.com" target="_blank" rel="noopener noreferrer" className="btn-secondary btn-large">Explore VOAS AI</a>
         </div>
       </div>
     </section>

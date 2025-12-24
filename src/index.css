@@ -1875,4 +1875,93 @@ Form Status Messages */
 .contact-form button:disabled:hover {
     transform: none;
     box-shadow: none;
+}/* 
+Advanced Performance Optimizations */
+
+/* Optimize heavy animated elements */
+.service-card,
+.portfolio-item,
+.team-member-card,
+.floating-card {
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Optimize transitions for better performance */
+.service-card:hover,
+.portfolio-item:hover,
+.team-member-card:hover {
+    transform: translateY(-12px) translateZ(0);
+}
+
+/* Reduce paint operations */
+.hero-content,
+.section-header {
+    contain: layout style;
+}
+
+/* Optimize scroll performance */
+.navbar {
+    contain: layout style paint;
+}
+
+/* GPU acceleration for frequently animated elements */
+.btn-primary,
+.btn-secondary,
+.linkedin-icon-btn {
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+/* Optimize image rendering */
+img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+/* Reduce reflow/repaint on hover states */
+.nav-links a::after {
+    will-change: width;
+}
+
+/* Optimize complex animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) translateZ(0);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) translateZ(0);
+    }
+}
+
+@keyframes floatSlow {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg) translateZ(0);
+    }
+    50% {
+        transform: translateY(-20px) rotate(1deg) translateZ(0);
+    }
+}
+
+/* Optimize for 60fps animations */
+@media (prefers-reduced-motion: no-preference) {
+    .floating-card {
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
+
+/* Memory optimization for mobile */
+@media (max-width: 768px) {
+    .floating-card,
+    .intelligence-card {
+        will-change: auto;
+    }
+    
+    .service-card:hover,
+    .portfolio-item:hover {
+        transform: translateY(-8px) translateZ(0);
+    }
 }

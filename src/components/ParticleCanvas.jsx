@@ -43,10 +43,10 @@ function ParticleCanvas() {
 
     const init = () => {
       particles = []
-      // Reduce particle count for better performance
+      // Further reduce particle count for better performance
       const particleCount = Math.min(
-        Math.floor((canvas.width * canvas.height) / 25000), // Increased divisor
-        50 // Maximum particle limit
+        Math.floor((canvas.width * canvas.height) / 30000), // Increased divisor for fewer particles
+        30 // Reduced maximum particle limit
       )
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle())

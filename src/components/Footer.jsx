@@ -29,7 +29,7 @@ function Footer() {
               <h4>Quick Links</h4>
               <ul>
                 <li>
-                  <a href="https://voas.convosol.com" target="_blank" rel="noopener noreferrer">VOAS AI</a>
+                  <a href="https://voas-ai.convosol.com" target="_blank" rel="noopener noreferrer">VOAS AI</a>
                 </li>
                 <li>
                   <Link to="/about">About Us</Link>
