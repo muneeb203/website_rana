@@ -7,12 +7,35 @@ function Contact() {
     company: '',
     message: ''
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Form submitted:', formData)
-    alert('Thank you for reaching out! We\'ll get back to you soon to start understanding your needs.')
-    setFormData({ name: '', email: '', company: '', message: '' })
+    setIsSubmitting(true)
+    setSubmitStatus('')
+
+    try {
+      const response = await fetch('https://formspree.io/f/mdklbpep', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (response.ok) {
+        setSubmitStatus('success')
+        setFormData({ name: '', email: '', company: '', message: '' })
+      } else {
+        setSubmitStatus('error')
+      }
+    } catch (error) {
+      console.error('Form submission error:', error)
+      setSubmitStatus('error')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleChange = (e) => {
@@ -47,6 +70,16 @@ function Contact() {
             </div>
           </div>
           <form className="contact-form" onSubmit={handleSubmit}>
+            {submitStatus === 'success' && (
+              <div className="form-message success">
+                <p>✅ Thank you for reaching out! We'll get back to you soon to start understanding your needs.</p>
+              </div>
+            )}
+            {submitStatus === 'error' && (
+              <div className="form-message error">
+                <p>❌ Something went wrong. Please try again or email us directly at hello@convosol.com</p>
+              </div>
+            )}
             <div className="form-group">
               <input 
                 type="text" 
@@ -55,6 +88,7 @@ function Contact() {
                 value={formData.name}
                 onChange={handleChange}
                 required 
+                disabled={isSubmitting}
               />
             </div>
             <div className="form-group">
@@ -65,6 +99,7 @@ function Contact() {
                 value={formData.email}
                 onChange={handleChange}
                 required 
+                disabled={isSubmitting}
               />
             </div>
             <div className="form-group">
@@ -74,6 +109,7 @@ function Contact() {
                 placeholder="Company (Optional)" 
                 value={formData.company}
                 onChange={handleChange}
+                disabled={isSubmitting}
               />
             </div>
             <div className="form-group">
@@ -84,9 +120,16 @@ function Contact() {
                 value={formData.message}
                 onChange={handleChange}
                 required
+                disabled={isSubmitting}
               ></textarea>
             </div>
-            <button type="submit" className="btn-primary btn-large">Start the Conversation</button>
+            <button 
+              type="submit" 
+              className="btn-primary btn-large"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Sending...' : 'Start the Conversation'}
+            </button>
           </form>
         </div>
       </div>

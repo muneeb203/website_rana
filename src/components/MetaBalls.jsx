@@ -12,42 +12,55 @@ export default function MetaBalls() {
   const mouseTarget = useRef(new THREE.Vector2(0.5, 0.5));
   const mousePos = useRef(new THREE.Vector2(0.5, 0.5));
   const clockRef = useRef(null);
+  const [isLoaded, setIsLoaded] = React.useState(false);
 
   useEffect(() => {
-    // Device detection & settings (production)
+    // Add a small delay to prevent blocking the main thread during initial load
+    const initTimeout = setTimeout(() => {
+      initializeMetaBalls();
+    }, 100);
+
+    return () => {
+      clearTimeout(initTimeout);
+    };
+  }, []);
+
+  const initializeMetaBalls = () => {
+    // Device detection & settings with enhanced performance optimization
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
     );
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     const isLowPowerDevice = isMobile || (navigator.hardwareConcurrency || 4) <= 4;
-    const devicePixelRatio = Math.min(window.devicePixelRatio || 1, isMobile ? 2 : 2.5);
+    const devicePixelRatio = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
 
+    // Performance-optimized settings for better scroll performance
     const settings = {
-      sphereCount: isMobile ? 4 : 6,
-      fixedTopLeftRadius: 0.8,
-      fixedBottomRightRadius: 0.9,
-      smallTopLeftRadius: 0.3,
-      smallBottomRightRadius: 0.35,
-      cursorRadiusMin: 0.08,
-      cursorRadiusMax: 0.15,
-      animationSpeed: 0.6,
-      movementScale: 1.2,
-      mouseSmoothness: 0.1,
-      mergeDistance: 1.5,
-      mouseProximityEffect: true,
-      minMovementScale: 0.3,
-      maxMovementScale: 1.0,
-      ambientIntensity: 0.12,
-      diffuseIntensity: 1.2,
-      specularIntensity: 2.5,
-      specularPower: 3.0,
-      fresnelPower: 0.8,
+      sphereCount: isMobile ? 2 : (isLowPowerDevice ? 3 : 4), // Further reduced
+      fixedTopLeftRadius: 0.6, // Smaller for better performance
+      fixedBottomRightRadius: 0.7,
+      smallTopLeftRadius: 0.2,
+      smallBottomRightRadius: 0.25,
+      cursorRadiusMin: 0.05,
+      cursorRadiusMax: 0.1,
+      animationSpeed: isMobile ? 0.3 : 0.4, // Much slower for smoother performance
+      movementScale: isMobile ? 0.6 : 0.8, // Reduced movement
+      mouseSmoothness: isMobile ? 0.2 : 0.15, // Less frequent updates
+      mergeDistance: 1.1, // Reduced merge calculations
+      mouseProximityEffect: false, // Disabled for all devices
+      minMovementScale: 0.5,
+      maxMovementScale: 0.8,
+      ambientIntensity: 0.08,
+      diffuseIntensity: 0.8,
+      specularIntensity: isMobile ? 1.0 : 1.5, // Much lower
+      specularPower: 2.0,
+      fresnelPower: 0.6,
       backgroundColor: new THREE.Color(0x0a0a15),
       sphereColor: new THREE.Color(0x050510),
       lightColor: new THREE.Color(0xccaaff),
       lightPosition: new THREE.Vector3(0.9, 0.9, 1.2),
-      contrast: 1.6,
-      fogDensity: 0.06,
+      contrast: 1.2,
+      fogDensity: 0.04,
       cursorGlowIntensity: 1.2,
       cursorGlowRadius: 2.2,
       cursorGlowColor: new THREE.Color(0xaa77ff)
@@ -513,30 +526,36 @@ export default function MetaBalls() {
     // prime cursor at center
     onPointerMove({ clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 });
 
-    // animation loop with performance throttling
+    // animation loop with enhanced performance throttling
     let lastFrameTime = 0;
-    const targetFPS = isMobile ? 30 : (isLowPowerDevice ? 45 : 60);
+    const targetFPS = isMobile ? 20 : (isLowPowerDevice ? 24 : 30); // Much lower FPS for scroll performance
     const frameInterval = 1000 / targetFPS;
     
     function render(currentTime) {
       rafRef.current = requestAnimationFrame(render);
 
-      // Throttle rendering based on device capabilities
+      // Enhanced throttling for smoother performance
       if (currentTime - lastFrameTime < frameInterval) {
         return;
       }
       lastFrameTime = currentTime;
 
-      // smooth mouse
+      // Smooth mouse with reduced frequency
       mousePos.current.x += (mouseTarget.current.x - mousePos.current.x) * settings.mouseSmoothness;
       mousePos.current.y += (mouseTarget.current.y - mousePos.current.y) * settings.mouseSmoothness;
 
       material.uniforms.uTime.value = clockRef.current.getElapsedTime();
       material.uniforms.uMousePosition.value = mousePos.current;
-      // renderer render
+      
+      // Renderer with performance optimization
       renderer.render(scene, camera);
     }
-    render();
+    
+    // Delayed start to prevent initial lag
+    setTimeout(() => {
+      setIsLoaded(true);
+      render(0);
+    }, 200);
 
     // cleanup on unmount
     return () => {
@@ -562,10 +581,18 @@ export default function MetaBalls() {
         // ignore disposal errors
       }
     };
-  }, []); // run once
+  }
 
   return (
-    <section className="metaballs-section" ref={containerRef}>
+    <section className={`metaballs-section ${isLoaded ? 'loaded' : 'loading'}`} ref={containerRef}>
+      {!isLoaded && (
+        <div className="metaballs-loader">
+          <div className="loader-content">
+            <div className="loader-spinner"></div>
+            <p>Loading experience...</p>
+          </div>
+        </div>
+      )}
       <div id="container"></div>
       <div className="hero-content">
         <h1 className="hero-title">

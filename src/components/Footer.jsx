@@ -1,32 +1,46 @@
+import { Link, useLocation } from 'react-router-dom'
+
 function Footer() {
+  const location = useLocation()
+  const isHomePage = location.pathname === '/'
+
+  const handleNavClick = (href) => {
+    if (isHomePage && href.startsWith('#')) {
+      // Smooth scroll to section on home page
+      const element = document.querySelector(href)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+  }
+
   return (
     <footer className="footer">
       <div className="container">
         <div className="footer-content">
           <div className="footer-brand">
             <div className="logo">
-              <img src="/logo.png" alt="ConvoSol Logo" />
-              <span>ConvoSol</span>
+              <img src="/logo/OG_on_white-removebg.png" alt="ConvoSol Logo" />
             </div>
-            <p>AI solutions that understand your business and grow with your needs.</p>
+            <p>AI-powered voice solutions for modern businesses.</p>
           </div>
           <div className="footer-links">
             <div className="footer-column">
-              <h4>Solutions</h4>
+              <h4>Quick Links</h4>
               <ul>
-                <li><a href="#services">Intelligent Automation</a></li>
-                <li><a href="#services">Conversational AI</a></li>
-                <li><a href="#services">Predictive Intelligence</a></li>
-                <li><a href="#services">Custom AI Solutions</a></li>
-              </ul>
-            </div>
-            <div className="footer-column">
-              <h4>Company</h4>
-              <ul>
-                <li><a href="#about">Why Convo Sol</a></li>
-                <li><a href="#portfolio">Our Impact</a></li>
-                <li><a href="#process">Our Approach</a></li>
-                <li><a href="#contact">Let's Talk</a></li>
+                <li>
+                  <a href="https://voas.convosol.com" target="_blank" rel="noopener noreferrer">VOAS AI</a>
+                </li>
+                <li>
+                  <Link to="/about">About Us</Link>
+                </li>
+                <li>
+                  {isHomePage ? (
+                    <a href="#contact" onClick={() => handleNavClick('#contact')}>Contact</a>
+                  ) : (
+                    <Link to="/#contact">Contact</Link>
+                  )}
+                </li>
               </ul>
             </div>
           </div>

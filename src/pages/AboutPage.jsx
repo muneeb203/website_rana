@@ -102,7 +102,7 @@ function AboutPage() {
       </section>
 
       {/* VOAS AI Product Section */}
-      <section className="voas-ai-section">
+      <section id="voas-ai" className="voas-ai-section">
         <div className="container">
           <div className="voas-hero">
             <div className="voas-badge">

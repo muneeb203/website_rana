@@ -9,10 +9,12 @@ function Navbar() {
   const handleNavClick = (href) => {
     setMobileMenuOpen(false)
     if (isHomePage && href.startsWith('#')) {
-      // Smooth scroll to section on home page
+      // Prevent hash from appearing in URL
       const element = document.querySelector(href)
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' })
+        // Remove hash from URL after scrolling
+        window.history.replaceState(null, null, window.location.pathname)
       }
     }
   }
@@ -27,31 +29,27 @@ function Navbar() {
           <ul className={`nav-links ${mobileMenuOpen ? 'active' : ''}`}>
             <li>
               {isHomePage ? (
-                <a href="#services" onClick={() => handleNavClick('#services')}>Solutions</a>
+                <a href="#services" onClick={(e) => { e.preventDefault(); handleNavClick('#services'); }}>Solutions</a>
               ) : (
                 <Link to="/#services" onClick={() => setMobileMenuOpen(false)}>Solutions</Link>
               )}
             </li>
             <li>
               {isHomePage ? (
-                <a href="#process" onClick={() => handleNavClick('#process')}>Approach</a>
+                <a href="#process" onClick={(e) => { e.preventDefault(); handleNavClick('#process'); }}>Approach</a>
               ) : (
                 <Link to="/#process" onClick={() => setMobileMenuOpen(false)}>Approach</Link>
               )}
             </li>
             <li>
-              {isHomePage ? (
-                <a href="#portfolio" onClick={() => handleNavClick('#portfolio')}>Impact</a>
-              ) : (
-                <Link to="/#portfolio" onClick={() => setMobileMenuOpen(false)}>Impact</Link>
-              )}
+              <Link to="/about#voas-ai" onClick={() => setMobileMenuOpen(false)}>Our Product</Link>
             </li>
             <li>
               <Link to="/about" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
             </li>
             <li>
               {isHomePage ? (
-                <a href="#contact" className="btn-primary" onClick={() => handleNavClick('#contact')}>Let's Talk</a>
+                <a href="#contact" className="btn-primary" onClick={(e) => { e.preventDefault(); handleNavClick('#contact'); }}>Let's Talk</a>
               ) : (
                 <Link to="/#contact" className="btn-primary" onClick={() => setMobileMenuOpen(false)}>Let's Talk</Link>
               )}
